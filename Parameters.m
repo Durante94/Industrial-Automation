@@ -1,3 +1,7 @@
+clc;
+clear;
+
+%%
 Tgeo = 287.15;  %[K] temperature of the water entering in the HP from geothermal system
 KTC = 760;      %overall heat transfer coefficient (heat exchanger water/air in the AHU) [W/K]
 COPMAX = 6;      %maximum COP value [-]
