@@ -22,14 +22,3 @@ K = 3.3;         %overall heat transfer coefficient per unit surface of the gree
 hmint = 8;        %convective heat transfer coefficient [W/m2K]
 C_g = c_air * m_g;   %heat capacity of greenhouse air [J/K]
 delta = 0.35;
-
-%%
-% for i=1:400
-%     T_e(i)=;
-% end
-% 
-% Tg(1) = 291.15; % indoor air temperature of the greenhouse [K] 18 °C
-% for i=1:400
-%     % T_e(i)=;
-%     Tg(i+1)=Tg(i)+(delta_t/C_g)*(S_g*K*(T_e(i)));
-% end
