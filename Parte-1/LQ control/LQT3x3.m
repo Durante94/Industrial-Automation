@@ -43,7 +43,7 @@ z = [4*sin(1:N+1)
 
 x0 = [-10 13 2]';
 x(:,1) = x0;
-%u = zeros(1,N-1);
+u = zeros(2,N-1);
 
 for i=1:N
     % Optimal control
