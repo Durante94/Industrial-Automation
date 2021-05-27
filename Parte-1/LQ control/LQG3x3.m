@@ -74,7 +74,7 @@ end
 
 % Plot of the Kalman estimation
 
-subplot(3,1,1);
+subplot(5,1,1);
 plot(t(1:N+1),x(1,:));
 hold on;
 plot(t(1:N+1),mu(1,:));
@@ -84,7 +84,7 @@ legend('Actual','Kalman estimation');
 xlabel('Time');
 ylabel('Reaction');
 
-subplot(3,1,2);
+subplot(5,1,2);
 plot(t(1:N+1),x(2,:));
 hold on;
 plot(t(1:N+1),mu(2,:));
@@ -94,8 +94,25 @@ legend('Actual','Kalman estimation');
 xlabel('Time');
 ylabel('Temperature');
 
-subplot(3,1,3);
-plot(t(1:N),u);
+subplot(5,1,3);
+plot(t(1:N+1),x(3,:));
+hold on;
+plot(t(1:N+1),mu(3,:));
+hold off;
+title('State1');
+legend('Actual','Kalman estimation');
+xlabel('Time');
+ylabel('Reaction');
+
+subplot(5,1,4);
+plot(t(1:N),u(1,:));
+title('Control');
+legend('u');
+xlabel('Time');
+ylabel('Cooling rate');
+
+subplot(5,1,5);
+plot(t(1:N),u(2,:));
 title('Control');
 legend('u');
 xlabel('Time');
