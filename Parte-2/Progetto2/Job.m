@@ -1,8 +1,8 @@
-classdef Job
+classdef Job < handle
     
     properties
         numJob;
-        direction; %in wich parallel machine this job il planned to go
+        direction; %in wich parallel machine this job is planned to go
         executionTime; %total time of execution in our system
         executionTimes; %array of times of execution for every machines
         startTime; %array of the times in wich the job starting the process for every machines
@@ -17,7 +17,7 @@ classdef Job
                 obj.direction=dir;
                 obj.executionTime=exeTime;
                 obj.executionTimes=array;
-                obj.startTime=zeros(1,4);
+                obj.startTime=-ones(1,4);
                 obj.endTime=zeros(1,4);
                 obj.waitingTime=0;
             end
@@ -51,7 +51,7 @@ classdef Job
             	tmp=machineNum-1;
             end
             
-            bool=obj.executionTimes(tmp)==t-obj.startTime(tmp);
+            bool=obj.executionTimes(machineNum)==t-obj.startTime(tmp);
         end
     end
 end

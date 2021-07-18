@@ -1,4 +1,4 @@
-classdef Machine
+classdef Machine < handle
     
     properties
         numMachine;
@@ -13,11 +13,11 @@ classdef Machine
         function obj = Machine(num)
             if nargin>0
                 obj.numMachine=num;
-                obj.currentJob=0;
-                obj.bufferJob=[];
+                obj.currentJob=Job(0,0,0, []);
+                obj.bufferJob=Job.empty;
                 obj.idleTime=0;
-                obj.startTime=0;
-                obj.endTime=0;
+                obj.startTime=-1;
+                obj.endTime=-1;
             end
         end
         
@@ -41,8 +41,8 @@ classdef Machine
             end
         end
         
-        function obj=PopJob(obj)
-           if obj.currentJob==0 && ~isempty(obj.bufferJob)
+        function obj=PopJob(obj, t)
+           if obj.currentJob.IsCompleted(obj.numMachine, t) && ~isempty(obj.bufferJob)
                obj.currentJob = obj.bufferJob(1);
                obj.bufferJob = obj.bufferJob(2:end);               
            end
