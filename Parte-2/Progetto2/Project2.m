@@ -30,18 +30,18 @@ for job=1:10 %%per ogni job
 	end
 	
 	if way2(5).numJob>0
-        way3(j)=Job(job, 3, tmp3, executionTimes);
+        way3(j)=Job(job, false, tmp3, executionTimes);
         j=j+1;
     else
         if way3(5).numJob>0
-            way2(i)=Job(job, 2, tmp2, executionTimes);
+            way2(i)=Job(job, true, tmp2, executionTimes);
             i=i+1;
         else
             if tmp2<tmp3
-                way2(i)=Job(job, 2, tmp2, executionTimes);
+                way2(i)=Job(job, true, tmp2, executionTimes);
                 i=i+1;
             else
-                way3(j)=Job(job, 3, tmp2, executionTimes);
+                way3(j)=Job(job, false, tmp2, executionTimes);
                 j=j+1;
             end 
         end

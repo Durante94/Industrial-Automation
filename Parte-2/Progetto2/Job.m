@@ -1,6 +1,4 @@
 classdef Job
-    %JOB Summary of this class goes here
-    %   Detailed explanation goes here
     
     properties
         numJob;
@@ -23,6 +21,37 @@ classdef Job
                 obj.endTime=zeros(1,4);
                 obj.waitingTime=0;
             end
+        end
+        
+        function obj=Wait(obj)
+            obj.waitingTime=obj.waitingTime+1;
+        end
+        
+        function obj=StartExe(obj, machineNum, t)
+            tmp=machineNum;
+            if tmp>2
+            	tmp=machineNum-1;
+            end
+            
+            obj.startTime(tmp)=t;
+        end
+        
+        function obj=EndExe(obj, machineNum, t)
+            tmp=machineNum;
+            if tmp>2
+            	tmp=machineNum-1;
+            end
+            
+            obj.endTime(tmp)=t;
+        end
+        
+        function bool=IsCompleted(obj, machineNum, t)
+            tmp=machineNum;
+            if tmp>2
+            	tmp=machineNum-1;
+            end
+            
+            bool=obj.executionTimes(tmp)==t-obj.startTime(tmp);
         end
     end
 end
