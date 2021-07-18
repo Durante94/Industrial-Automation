@@ -136,21 +136,21 @@ while way2(halfNumJob).endTime(numMachines-1)==0 && way3(1).endTime(numMachines-
                         Machines(3).PushJob(Machines(m).currentJob);
                         % choose a job that have enough time on M1 in order
                         % to not create a buffer on M3
-                        for idx=1:length(way2)
-                            if(way2(idx).executionTimes(1)>=Machines(m).currentJob.executionTimes(2))
-                                Machines(m).PushJob(way2(idx));
+                        for idx=1:length(way3)
+                            if(way3(idx).executionTimes(1)>=Machines(m).currentJob.executionTimes(2))
+                                Machines(m).PushJob(way3(idx));
                                 j=idx;
                                 break;
                             end
                         end
                         
                         if j==1
-                            way2=way2(2:end);
+                            way3=way3(2:end);
                         else
-                            if j==length(way2)
-                                way2=way2(1:end-1);
+                            if j==length(way3)
+                                way3=way3(1:end-1);
                             else
-                                way2=way2([1:j-1,j+1:end]);
+                                way3=way3([1:j-1,j+1:end]);
                             end
                         end
                     end
