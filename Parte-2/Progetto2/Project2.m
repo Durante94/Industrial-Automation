@@ -1,5 +1,5 @@
-clc;
 clear;
+clc;
 %% Data Import
 
 [num]=xlsread('Execution-Times.xlsx');
@@ -74,7 +74,17 @@ t=0; %time
 
 while way2(5).endTime(4)==0 && way3(1).endTime(4)==0
 	for m=5:-1:1
-        a
+        % macchina idle
+        if Machines(m).startTime>0 && Machines(m).currentJob==0 && isempty(Machines(m).bufferJob)
+            Machines(m).Idle();
+        else
+            % macchina impegnata
+            if Machines(m).currentJob>0 && ~Machines(m).currentJob.IsCompleted(Machines(m).numMachine, t)
+                
+            end
+        end
+        % job terminato per la macchina
+        % job da iniziare
     end
 	t=t+1;
 end

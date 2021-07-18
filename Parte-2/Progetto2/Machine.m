@@ -2,9 +2,9 @@ classdef Machine
     
     properties
         numMachine;
-        currentJob;
-        bufferJob;
-        idleTime;
+        currentJob; %current job under execution
+        bufferJob; %fifo array of job that wait for the execution
+        idleTime; %how much time the machine was idle
         startTime;
         endTime;
     end
@@ -33,20 +33,19 @@ classdef Machine
             obj.endTime=t;
         end
 
-        function obj=PushJob(obj, jobNum)
+        function obj=PushJob(obj, job)
             if obj.currentJob==0
-                obj.currentJob=jobNum;
+                obj.currentJob=job;
             else
-                obj.bufferJob(length(obj.bufferJob))=jobNum;
+                obj.bufferJob(length(obj.bufferJob)+1)=job;
             end
         end
         
         function obj=PopJob(obj)
            if obj.currentJob==0 && ~isempty(obj.bufferJob)
-               obj.currentJob=obj.bufferJob(1);
-               obj.bufferJob(1:end-1) = obj.bufferJob(2:end);
+               obj.currentJob = obj.bufferJob(1);
+               obj.bufferJob = obj.bufferJob(2:end);               
            end
         end
     end
 end
-

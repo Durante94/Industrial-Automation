@@ -2,12 +2,12 @@ classdef Job
     
     properties
         numJob;
-        direction;
-        executionTime;
-        executionTimes;
-        startTime;
-        endTime;
-        waitingTime;
+        direction; %in wich parallel machine this job il planned to go
+        executionTime; %total time of execution in our system
+        executionTimes; %array of times of execution for every machines
+        startTime; %array of the times in wich the job starting the process for every machines
+        endTime; %array of the times in wich the job ending the process for every machines
+        waitingTime; %total waiting time
     end
     
     methods      
@@ -55,4 +55,3 @@ classdef Job
         end
     end
 end
-
