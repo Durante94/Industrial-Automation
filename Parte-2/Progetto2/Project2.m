@@ -101,7 +101,7 @@ while way2(halfNumJob).endTime(numMachines-1)==0 && way3(1).endTime(numMachines-
         
         % job da iniziare
         if Machines(m).currentJob>0 && Machines(m).currentJob.startTime(m)<0
-            Machines(m).currentJob.startTime(m)=t;
+            Machines(m).currentJob.startTime(m, t);
         end
         
         % job terminato per la macchina
