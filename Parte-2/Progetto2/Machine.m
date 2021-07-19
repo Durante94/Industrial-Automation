@@ -21,31 +21,36 @@ classdef Machine
             end
         end
         
-        function obj=Idle(obj)
+        function newObj=Idle(obj)
             obj.idleTime=obj.idleTime+1;
+            newObj=obj;
         end
         
-        function obj=Starting(obj, t)
+        function newObj=Starting(obj, t)
             obj.startTime=t;
+            newObj=obj;
         end
         
-        function obj=Ending(obj, t)
+        function newObj=Ending(obj, t)
             obj.endTime=t;
+            newObj=obj;
         end
 
-        function obj=PushJob(obj, job)
+        function newObj=PushJob(obj, job)
             if obj.currentJob.numJob==0
                 obj.currentJob=job;
             else
                 obj.bufferJob(length(obj.bufferJob)+1)=job;
             end
+            newObj=obj;
         end
         
-        function obj=PopJob(obj, t)
+        function newObj=PopJob(obj, t)
            if obj.currentJob.IsCompleted(obj.numMachine, t) && ~isempty(obj.bufferJob)
                obj.currentJob = obj.bufferJob(1);
                obj.bufferJob = obj.bufferJob(2:end);               
            end
+           newObj=obj;
         end
     end
 end

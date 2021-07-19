@@ -23,26 +23,29 @@ classdef Job
             end
         end
         
-        function obj=Wait(obj)
+        function newObj=Wait(obj)
             obj.waitingTime=obj.waitingTime+1;
+            newObj=obj;
         end
         
-        function obj=StartExe(obj, machineNum, t)
+        function newObj=StartExe(obj, machineNum, t)
             tmp=machineNum;
             if tmp>2
             	tmp=machineNum-1;
             end
             
             obj.startTime(tmp)=t;
+            newObj=obj;
         end
         
-        function obj=EndExe(obj, machineNum, t)
+        function newObj=EndExe(obj, machineNum, t)
             tmp=machineNum;
             if tmp>2
             	tmp=machineNum-1;
             end
             
             obj.endTime(tmp)=t;
+            newObj=obj;
         end
         
         function bool=IsCompleted(obj, machineNum, t)

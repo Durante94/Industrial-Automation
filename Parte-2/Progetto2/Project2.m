@@ -99,12 +99,12 @@ while flag==true
         
         % job da iniziare
         if Machines(m).currentJob.numJob>0 && Machines(m).currentJob.startTime(m)<0
-            Machines(m)=Machines(m).currentJob.StartExe(m, t);
+            Machines(m).currentJob=Machines(m).currentJob.StartExe(m, t);
         end
         
         % job terminato per la macchina
         if Machines(m).currentJob.numJob>0 && Machines(m).currentJob.IsCompleted(m, t)
-            Machines(m)=Machines(m).currentJob.EndExe(m, t);
+            Machines(m).currentJob=Machines(m).currentJob.EndExe(m, t);
             
             % behaviour based on the machine we consider
             switch m
@@ -160,13 +160,14 @@ while flag==true
             Machines(m)=Machines(m).PopJob(t);
         end
     end
-	t=t+1;
     % check if all the job are completed
     for job=way2
-         flag=flag && job.endTime(numMachines-1)==0;
+         flag=flag && job.IsCompleted(numMachines-1, t);
     end
     
     for job=way3
-         flag=flag && job.endTime(numMachines-1)==0;
+         flag=flag && job.IsCompleted(numMachines-1, t);
     end
+    
+	t=t+1;
 end
