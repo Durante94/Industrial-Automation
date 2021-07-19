@@ -1,4 +1,4 @@
-classdef Machine < handle
+classdef Machine
     
     properties
         numMachine;
@@ -34,7 +34,7 @@ classdef Machine < handle
         end
 
         function obj=PushJob(obj, job)
-            if obj.currentJob==0
+            if obj.currentJob.numJob==0
                 obj.currentJob=job;
             else
                 obj.bufferJob(length(obj.bufferJob)+1)=job;

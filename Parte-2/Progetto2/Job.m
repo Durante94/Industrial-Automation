@@ -1,4 +1,4 @@
-classdef Job < handle
+classdef Job
     
     properties
         numJob;
