@@ -54,7 +54,11 @@ classdef Job
             	tmp=machineNum-1;
             end
             
-            bool=obj.executionTimes(machineNum)==t-obj.startTime(tmp);
+            if(obj.startTime(tmp)<0)
+                bool=false;
+            else
+                bool=obj.executionTimes(machineNum)==t-obj.startTime(tmp);
+            end
         end
     end
 end
