@@ -48,6 +48,15 @@ classdef Job
             newObj=obj;
         end
         
+        function bool=IsStarted(obj, machineNum)
+            tmp=machineNum;
+            if tmp>2
+            	tmp=machineNum-1;
+            end
+            
+            bool=obj.startTime(tmp)>-1;
+        end
+        
         function bool=IsCompleted(obj, machineNum, t)
             tmp=machineNum;
             if tmp>2
@@ -59,6 +68,13 @@ classdef Job
             else
                 bool=obj.executionTimes(machineNum)==t-obj.startTime(tmp);
             end
+        end
+        
+        function copy=copyJob(obj)
+        	copy=Job(obj.numJob, obj.direction, obj.executionTime, obj.executionTimes);
+        	copy.startTime=obj.startTime;
+            copy.endTime=obj.endTime;
+            copy.waitingTime=obj.waitingTime;
         end
     end
 end

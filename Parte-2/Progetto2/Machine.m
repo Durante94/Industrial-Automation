@@ -45,12 +45,23 @@ classdef Machine
             newObj=obj;
         end
         
-        function newObj=PopJob(obj, t)
-           if obj.currentJob.IsCompleted(obj.numMachine, t) && ~isempty(obj.bufferJob)
-               obj.currentJob = obj.bufferJob(1);
+        function newObj=PopJob(obj)
+           if ~isempty(obj.bufferJob)
+               obj.currentJob = obj.bufferJob(1).copyJob();
                obj.bufferJob = obj.bufferJob(2:end);               
+           else
+               obj.currentJob=Job(0,0,0, []);
            end
            newObj=obj;
+        end
+        
+        function copyM=copyMachine(obj)
+            copyM=Machine(obj.numMachine);
+            copyM.currentJob=obj.currentJob.copyJob();
+            copyM.bufferJob=obj.bufferJob;
+            copyM.idleTime=obj.idleTime;
+            copyM.startTime=obj.startTime;
+            copyM.endTime=obj.endTime;
         end
     end
 end

@@ -80,13 +80,11 @@ Machines(1)=Machines(1).PushJob(way3(numJob-halfNumJob));
 way2=way2(2:end);
 way3=way3(1:end-1);
 
-flag=true; % bool to know if there are still job to complete
-
 listCompletedJob(numJob)=Job(0,0,0, []);% listo of the completed job in order of completion
 index=1; % index of list above
 
 % Algorithm
-while flag
+while listCompletedJob(numJob).numJob==0
     for m=numMachines:-1:1
         % macchina idle
         if Machines(m).startTime>-1 && Machines(m).currentJob.numJob == 0 && isempty(Machines(m).bufferJob) && Machines(m).endTime==0
@@ -99,7 +97,7 @@ while flag
         end
         
         % job da iniziare
-        if Machines(m).currentJob.numJob>0 && Machines(m).currentJob.startTime(m)<0
+        if Machines(m).currentJob.numJob>0 && ~Machines(m).currentJob.IsStarted(m)
             Machines(m).currentJob=Machines(m).currentJob.StartExe(m, t);
         end
         
@@ -112,10 +110,10 @@ while flag
                 case 1
                     j=-1;
                     i=-1;
-                    if isempty(way2) && isempty(way3) % if non job could be appended on the first machine the M1 end his execution
+                    if isempty(way2) && isempty(way3) && ~isempty(Machines(m).bufferJob) && Machines(m).currentJob.numJob==0 % if non job could be appended on the first machine the M1 end his execution
                         Machines(m)=Machines(m).Ending(t);
                     elseif Machines(m).currentJob.direction==true % if job 
-                        Machines(2)=Machines(2).PushJob(Machines(m).currentJob);
+                        Machines(2)=Machines(2).PushJob(Machines(m).currentJob.copyJob());
                         % choose a job that have enough time on M1 in order
                         % to not create a buffer on M2
                         for idx=1:length(way2)
@@ -136,11 +134,11 @@ while flag
                             way2=way2([1:i-1,i+1:end]);
                         end
                     else
-                        Machines(3)=Machines(3).PushJob(Machines(m).currentJob);
+                        Machines(3)=Machines(3).PushJob(Machines(m).currentJob.copyJob());
                         % choose a job that have enough time on M1 in order
                         % to not create a buffer on M3
                         for idx=1:length(way3)
-                            if(way3(idx).executionTimes(1)>=Machines(m).currentJob.executionTimes(2) || idx==length(way3))
+                            if(way3(idx).executionTimes(1)>=Machines(m).currentJob.executionTimes(3) || idx==length(way3))
                                 Machines(m)=Machines(m).PushJob(way3(idx));
                                 j=idx;
                                 break;
@@ -157,31 +155,38 @@ while flag
                             way3=way3([1:j-1,j+1:end]);
                         end
                     end
-                case {2,3}
-                    Machines(4)=Machines(4).PushJob(Machines(m).currentJob);
+                case 2
+                    Machines(4)=Machines(4).PushJob(Machines(m).currentJob.copyJob());
+                    if isempty(Machines(m).bufferJob) && Machines(1).endTime>0
+                        Machines(m)=Machines(m).Ending(t);
+                    end
+                case 3
+                    Machines(4)=Machines(4).PushJob(Machines(m).currentJob.copyJob());
                     if isempty(Machines(m).bufferJob) && Machines(1).endTime>0
                         Machines(m)=Machines(m).Ending(t);
                     end
                 case 4
-                    Machines(5)=Machines(5).PushJob(Machines(m).currentJob);
+                    Machines(5)=Machines(5).PushJob(Machines(m).currentJob.copyJob());
                     if isempty(Machines(m).bufferJob) && Machines(2).endTime>0 && Machines(3).endTime>0
                         Machines(m)=Machines(m).Ending(t);
                     end
                 case 5
-                    listCompletedJob(index)=Machines(m).currentJob;
+                    listCompletedJob(index)=Machines(m).currentJob.copyJob();
                     index=index+1;
                     
                     if isempty(Machines(m).bufferJob) && Machines(4).endTime>0
                         Machines(m)=Machines(m).Ending(t);
                     end
             end        
-            Machines(m)=Machines(m).PopJob(t);
+            Machines(m)=Machines(m).PopJob();
+        end
+        
+        % Update of the waiting time of the Jobs for every machine
+        if m>1
+            for idx=1:length(Machines(m).bufferJob)
+                Machines(m).bufferJob(idx)=Machines(m).bufferJob(idx).Wait();
+            end
         end
     end
-    % check if all the job are completed 
-    for m=1:numMachines
-        flag = flag && Machines(m).endTime==-1;
-    end
-    
-	t=t+1;
+    t=t+1;
 end
