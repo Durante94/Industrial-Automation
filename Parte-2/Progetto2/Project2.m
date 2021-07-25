@@ -51,17 +51,10 @@ for job=1:numJob %%per ogni job
     end 
 end
 
-% way2
-% way3
-
 [~, ind]=sort([way2.executionTime]);
 way2=way2(ind);
-% orderWay2=way2(ind)
-
 [~, ind]=sort([way3.executionTime]);
 way3=way3(ind);
-% orderWay3=way3(ind)
-
 
 %% Machines creation
 Machines(numMachines)=Machine(0);
@@ -87,7 +80,7 @@ index=1; % index of list above
 while listCompletedJob(numJob).numJob==0
     for m=numMachines:-1:1
         % macchina idle
-        if Machines(m).startTime>-1 && Machines(m).currentJob.numJob == 0 && isempty(Machines(m).bufferJob) && Machines(m).endTime==0
+        if Machines(m).startTime>-1 && Machines(m).currentJob.numJob == 0 && isempty(Machines(m).bufferJob) && Machines(m).endTime<0
             Machines(m)=Machines(m).Idle();
         end
         
@@ -110,9 +103,11 @@ while listCompletedJob(numJob).numJob==0
                 case 1
                     j=-1;
                     i=-1;
-                    if isempty(way2) && isempty(way3) && ~isempty(Machines(m).bufferJob) && Machines(m).currentJob.numJob==0 % if non job could be appended on the first machine the M1 end his execution
+                    if isempty(way2) && isempty(way3) && isempty(Machines(m).bufferJob) && Machines(m).currentJob.IsCompleted(m, t) % if non job could be appended on the first machine the M1 end his execution
                         Machines(m)=Machines(m).Ending(t);
-                    elseif Machines(m).currentJob.direction==true % if job 
+                    end
+                    
+                    if Machines(m).currentJob.direction==true % if job
                         Machines(2)=Machines(2).PushJob(Machines(m).currentJob.copyJob());
                         % choose a job that have enough time on M1 in order
                         % to not create a buffer on M2
@@ -155,12 +150,7 @@ while listCompletedJob(numJob).numJob==0
                             way3=way3([1:j-1,j+1:end]);
                         end
                     end
-                case 2
-                    Machines(4)=Machines(4).PushJob(Machines(m).currentJob.copyJob());
-                    if isempty(Machines(m).bufferJob) && Machines(1).endTime>0
-                        Machines(m)=Machines(m).Ending(t);
-                    end
-                case 3
+                case {2, 3}
                     Machines(4)=Machines(4).PushJob(Machines(m).currentJob.copyJob());
                     if isempty(Machines(m).bufferJob) && Machines(1).endTime>0
                         Machines(m)=Machines(m).Ending(t);
@@ -182,11 +172,47 @@ while listCompletedJob(numJob).numJob==0
         end
         
         % Update of the waiting time of the Jobs for every machine
-        if m>1
-            for idx=1:length(Machines(m).bufferJob)
-                Machines(m).bufferJob(idx)=Machines(m).bufferJob(idx).Wait();
+        for idx=1:length(Machines(m).bufferJob)
+            Machines(m).bufferJob(idx)=Machines(m).bufferJob(idx).Wait(m);
+        end
+        if m==1
+            for idx=1:length(way2)
+                way2(idx)=way2(idx).Wait(1);
+            end
+            for idx=1:length(way3)
+                way3(idx)=way3(idx).Wait(1);
             end
         end
     end
+    
     t=t+1;
 end
+
+
+%% Plotting
+
+clf;
+close all;
+
+% Creation of the matrix that we're going
+% to plot in the Gantt chart
+ganttMatrix = zeros((numMachines-1)*2, numJob);
+
+% Gap_Duration=[0,2,5,3,5,3;
+%               3,5,3,5,3,4;
+%               9,3,0,0,12,2;
+%               13,2,2,2,8,3];
+
+for job=listCompletedJob
+    tmp=zeros((numMachines-1)*2,1);
+    
+    for i=1:length(job.waitingTime)             
+        tmp(2*i-1)=job.waitingTime(i);
+        tmp(2*i)=job.endTime(i)-job.startTime(i)+1;
+    end
+    
+    ganttMatrix(:,job.numJob)=tmp;
+end
+
+H = barh(1:numJob,ganttMatrix,'stacked')
+set(H(1:2:(numMachines-1)*2),'Visible','off')

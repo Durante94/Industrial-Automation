@@ -19,12 +19,17 @@ classdef Job
                 obj.executionTimes=array;
                 obj.startTime=-ones(1,4);
                 obj.endTime=zeros(1,4);
-                obj.waitingTime=0;
+                obj.waitingTime=zeros(1,4);
             end
         end
         
-        function newObj=Wait(obj)
-            obj.waitingTime=obj.waitingTime+1;
+        function newObj=Wait(obj, machineNum)
+            tmp=machineNum;
+            if tmp>2
+            	tmp=machineNum-1;
+            end
+            
+            obj.waitingTime(tmp)=obj.waitingTime(tmp)+1;
             newObj=obj;
         end
         
