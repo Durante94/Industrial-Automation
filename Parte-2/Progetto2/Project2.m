@@ -74,7 +74,7 @@ way2=way2(2:end);
 way3=way3(1:end-1);
 
 listCompletedJob(numJob)=Job(0,0,0, []);% listo of the completed job in order of completion
-index=1; % index of list above
+index=0; % index of list above
 
 % Algorithm
 while listCompletedJob(numJob).numJob==0
@@ -103,9 +103,9 @@ while listCompletedJob(numJob).numJob==0
                 case 1
                     j=-1;
                     i=-1;
-                    if isempty(way2) && isempty(way3) && isempty(Machines(m).bufferJob) && Machines(m).currentJob.IsCompleted(m, t) % if non job could be appended on the first machine the M1 end his execution
-                        Machines(m)=Machines(m).Ending(t);
-                    end
+%                     if isempty(way2) && isempty(way3) && isempty(Machines(m).bufferJob) && Machines(m).currentJob.IsCompleted(m, t) % if non job could be appended on the first machine the M1 end his execution
+%                         Machines(m)=Machines(m).Ending(t);
+%                     end
                     
                     if Machines(m).currentJob.direction==true % if job
                         Machines(2)=Machines(2).PushJob(Machines(m).currentJob.copyJob());
@@ -152,21 +152,44 @@ while listCompletedJob(numJob).numJob==0
                     end
                 case {2, 3}
                     Machines(4)=Machines(4).PushJob(Machines(m).currentJob.copyJob());
-                    if isempty(Machines(m).bufferJob) && Machines(1).endTime>0
-                        Machines(m)=Machines(m).Ending(t);
-                    end
+%                     if isempty(Machines(m).bufferJob) && Machines(1).endTime>0
+%                         Machines(m)=Machines(m).Ending(t);
+%                     end
                 case 4
                     Machines(5)=Machines(5).PushJob(Machines(m).currentJob.copyJob());
-                    if isempty(Machines(m).bufferJob) && Machines(2).endTime>0 && Machines(3).endTime>0
-                        Machines(m)=Machines(m).Ending(t);
-                    end
+%                     if isempty(Machines(m).bufferJob) && Machines(2).endTime>0 && Machines(3).endTime>0
+%                         Machines(m)=Machines(m).Ending(t);
+%                     end
                 case 5
-                    listCompletedJob(index)=Machines(m).currentJob.copyJob();
                     index=index+1;
+                    listCompletedJob(index)=Machines(m).currentJob.copyJob();
                     
-                    if isempty(Machines(m).bufferJob) && Machines(4).endTime>0
-                        Machines(m)=Machines(m).Ending(t);
+                    if index==numJob %logic to set the correct end time for every machines
+                        oppositeWay=~listCompletedJob(index).direction;
+                        for mPos=1:length(listCompletedJob(index).endTime)
+                            tmp=mPos;
+                            
+                            if tmp>2 || (tmp==2 && ~listCompletedJob(index).direction)
+                                tmp=tmp+1;
+                            end
+                            
+                            Machines(tmp)=Machines(tmp).Ending(listCompletedJob(index).endTime(mPos));
+                        end
+                        for jobPos=index-1:-1:1
+                            if listCompletedJob(jobPos).direction==oppositeWay
+                                if oppositeWay
+                                    mPos=2;
+                                else
+                                    mPos=3;
+                                end
+                                Machines(mPos)=Machines(mPos).Ending(listCompletedJob(jobPos).endTime(2));
+                                break;
+                            end
+                        end
                     end
+%                     if isempty(Machines(m).bufferJob) && Machines(4).endTime>0
+%                         Machines(m)=Machines(m).Ending(t);
+%                     end
             end        
             Machines(m)=Machines(m).PopJob();
         end
@@ -196,23 +219,32 @@ close all;
 
 % Creation of the matrix that we're going
 % to plot in the Gantt chart
-ganttMatrix = zeros((numMachines-1)*2, numJob);
-
-% Gap_Duration=[0,2,5,3,5,3;
-%               3,5,3,5,3,4;
-%               9,3,0,0,12,2;
-%               13,2,2,2,8,3];
+ganttMatrix = zeros(numMachines*2, numJob);
+labels=cell(numMachines*2, 1);
 
 for job=listCompletedJob
-    tmp=zeros((numMachines-1)*2,1);
-    
-    for i=1:length(job.waitingTime)             
-        tmp(2*i-1)=job.waitingTime(i);
-        tmp(2*i)=job.endTime(i)-job.startTime(i)+1;
+    tmp=zeros(1,numMachines*2);
+    offset=0;
+    for i=1:length(job.waitingTime)   
+        if (i==2 && ~job.direction) || i>2
+            offset=1;
+        end
+        
+        tmp(1,2*(i+offset)-1)=job.waitingTime(i);
+        tmp(1,2*(i+offset))=job.endTime(i)-job.startTime(i)+1;
+        
+        if isempty(labels{2*(i+offset)})
+            labels{2*(i+offset)-1}="";
+            labels{2*(i+offset)}="Execution time in Machine"+(i+offset);
+        end
     end
     
-    ganttMatrix(:,job.numJob)=tmp;
+    ganttMatrix(job.numJob,:)=tmp;
 end
 
-H = barh(1:numJob,ganttMatrix,'stacked')
-set(H(1:2:(numMachines-1)*2),'Visible','off')
+H = barh(1:numJob,ganttMatrix,'stacked');
+set(H(1:2:numMachines*2),'Visible','off');
+title('Gantt chart');
+xlabel('Processing time');
+ylabel('Job schedule');
+legend(labels, 'Location', 'northwest');
