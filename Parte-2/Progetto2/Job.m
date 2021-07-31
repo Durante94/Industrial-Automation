@@ -17,61 +17,61 @@ classdef Job
                 obj.direction=dir;
                 obj.executionTime=exeTime;
                 obj.executionTimes=array;
-                obj.startTime=-ones(1,4);
-                obj.endTime=zeros(1,4);
-                obj.waitingTime=zeros(1,4);
+                obj.startTime=-ones(1,5);
+                obj.endTime=zeros(1,5);
+                obj.waitingTime=zeros(1,5);
             end
         end
         
         function newObj=Wait(obj, machineNum)
-            tmp=machineNum;
-            if tmp>2
-            	tmp=machineNum-1;
-            end
-            
-            obj.waitingTime(tmp)=obj.waitingTime(tmp)+1;
+%             tmp=machineNum;
+%             if tmp>2
+%             	tmp=machineNum-1;
+%             end
+             
+            obj.waitingTime(machineNum)=obj.waitingTime(machineNum)+1;
             newObj=obj;
         end
         
         function newObj=StartExe(obj, machineNum, t)
-            tmp=machineNum;
-            if tmp>2
-            	tmp=machineNum-1;
-            end
+%             tmp=machineNum;
+%             if tmp>2
+%             	tmp=machineNum-1;
+%             end
             
-            obj.startTime(tmp)=t;
+            obj.startTime(machineNum)=t;
             newObj=obj;
         end
         
         function newObj=EndExe(obj, machineNum, t)
-            tmp=machineNum;
-            if tmp>2
-            	tmp=machineNum-1;
-            end
+%             tmp=machineNum;
+%             if tmp>2
+%             	tmp=machineNum-1;
+%             end
             
-            obj.endTime(tmp)=t;
+            obj.endTime(machineNum)=t;
             newObj=obj;
         end
         
         function bool=IsStarted(obj, machineNum)
-            tmp=machineNum;
-            if tmp>2
-            	tmp=machineNum-1;
-            end
+%             tmp=machineNum;
+%             if tmp>2
+%             	tmp=machineNum-1;
+%             end
             
-            bool=obj.startTime(tmp)>-1;
+            bool=obj.startTime(machineNum)>-1;
         end
         
         function bool=IsCompleted(obj, machineNum, t)
-            tmp=machineNum;
-            if tmp>2
-            	tmp=machineNum-1;
-            end
+%             tmp=machineNum;
+%             if tmp>2
+%             	tmp=machineNum-1;
+%             end
             
-            if(obj.startTime(tmp)<0)
+            if(obj.startTime(machineNum)<0)
                 bool=false;
             else
-                bool=obj.executionTimes(machineNum)==t-obj.startTime(tmp);
+                bool=obj.executionTimes(machineNum)==t-obj.startTime(machineNum);
             end
         end
         
