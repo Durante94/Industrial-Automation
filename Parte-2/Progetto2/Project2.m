@@ -188,6 +188,10 @@ while listCompletedJob(numJobs).numJob==0
     t=t+1;
 end
 
+for tab_job = listCompletedJob
+    disp (tab_job);
+end
+
 
 %% Plotting
 
