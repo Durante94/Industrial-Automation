@@ -1,16 +1,16 @@
-classdef Machine
+classdef Machine  %this class is to define the Machines attributes and some utilities functions
     
     properties
-        numMachine;
+        numMachine; %number of machines
         currentJob; %current job under execution
         bufferJob; %fifo array of job that wait for the execution
         idleTime; %how much time the machine was idle
-        startTime;
-        endTime;
+        startTime; %the time of start
+        endTime; %ending time
     end
     
     methods
-        function obj = Machine(num)
+        function obj = Machine(num) %Costructor
             if nargin>0
                 obj.numMachine=num;
                 obj.currentJob=Job(0,0,0, []);
@@ -21,22 +21,22 @@ classdef Machine
             end
         end
         
-        function newObj=Idle(obj)
+        function newObj=Idle(obj) %Increment Idle time
             obj.idleTime=obj.idleTime+1;
             newObj=obj;
         end
         
-        function newObj=Starting(obj, t)
+        function newObj=Starting(obj, t) %set start time of machine
             obj.startTime=t;
             newObj=obj;
         end
         
-        function newObj=Ending(obj, t)
+        function newObj=Ending(obj, t) %set ending time of machine
             obj.endTime=t;
             newObj=obj;
         end
 
-        function newObj=PushJob(obj, job)
+        function newObj=PushJob(obj, job) %set a job for the execution or add it in a buffer
             if obj.currentJob.numJob==0
                 obj.currentJob=job;
             else
@@ -45,7 +45,7 @@ classdef Machine
             newObj=obj;
         end
         
-        function newObj=PopJob(obj)
+        function newObj=PopJob(obj) %remove the current Job and replace it with the first inserted in the Buffer if it exist, otherwise we create a default null job 
            if ~isempty(obj.bufferJob)
                obj.currentJob = obj.bufferJob(1).copyJob();
                obj.bufferJob = obj.bufferJob(2:end);               
@@ -55,7 +55,7 @@ classdef Machine
            newObj=obj;
         end
         
-        function copyM=copyMachine(obj)
+        function copyM=copyMachine(obj) %copy the object of the machine with proprieties
             copyM=Machine(obj.numMachine);
             copyM.currentJob=obj.currentJob.copyJob();
             copyM.bufferJob=obj.bufferJob;
