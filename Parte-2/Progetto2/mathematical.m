@@ -25,7 +25,7 @@ prob = optimproblem;
 S = optimvar('S', numMachines, numJobs, 'lowerbound',0);%starting times
 C = optimvar('C', numMachines, numJobs, 'lowerbound',0);%completion times
 X = optimvar('X', numMachines, numJobs, numJobs, 'Type', 'integer', 'lowerbound',0, 'upperbound', 1);%binary variables
-Y = optimvar('Y', 2, numJobs, 'Type', 'integer', 'lowerbound',0, 'upperbound', 1);%binary variables, indicate if the machine M2 {(1,:)} for the job i is used, otherwise 0, same for M3{(2;:)}
+Y = optimvar('Y', numMachines, numJobs, 'Type', 'integer', 'lowerbound',0, 'upperbound', 1);%binary variables, indicate 1 if the machine is used for the job i, otherwise 0
 Cmax=optimvar('Cmax', 1, 'lowerbound',0);
 
 %% Objective function
@@ -105,30 +105,31 @@ end
 
 prob.Constraints.machine4before5constr = machine4before5constr;
 
-% Choose if the job i goes on M2 or M3
+% Force the job to pass through M1, M2 or M3, M4 and M5
 
 count = 1;
-chooseconstr = optimconstr(numJobs);
+choosepathconstr = optimconstr(numJobs*(numMachines-1));
 
 for i=1:numJobs
-    chooseconstr(count) = 1 == Y(1,i) + Y(2,i);
-    count = count+1;
+    choosepathconstr(count) = Y(1,i) == 1;
+    choosepathconstr(count+1) = Y(2,i) + Y(3,i) == 1;
+    choosepathconstr(count+2) = Y(4,i) == 1;
+    choosepathconstr(count+3) = Y(5,i) == 1;
+    count = count+numMachines-1;
 end
 
-prob.Constraints.chooseconstr = chooseconstr;
-
-% Force the job to pass through M2 or M3
+prob.Constraints.choosepathconstr = choosepathconstr;
 
 count = 1;
-parallelismconstr = optimconstr(numJobs*2);
+pathconstr = optimconstr(numJobs*2);
 
 for i=1:numJobs
-    parallelismconstr(count) = S(2,i) + C(2,i) <= m*Y(1,i);
-    parallelismconstr(count) = S(3,i) + C(3,i) <= m*Y(2,i);
+    pathconstr(count) = S(2,i) >= (S(1,i)+C(1,i))-m*(1-Y(2,i));
+    pathconstr(count+1) = S(3,i) >= (S(1,i)+C(1,i))-m*(1-Y(3,i));
     count = count+2;
 end
 
-prob.Constraints.parallelismconstr = parallelismconstr;
+prob.Constraints.pathconstr = pathconstr;
 
 %Compute Cmax
 
