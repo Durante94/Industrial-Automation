@@ -6,9 +6,6 @@ clc;
 %import data, P is the processing times transposed
 [P,numMachines,numJobs]=definitions('Execution-Times.xlsx');
 
-% % Defining the processing times
-% P=P';
-
 % Defining the jobs
 J = 1:numJobs;
 
@@ -121,12 +118,14 @@ end
 prob.Constraints.choosepathconstr = choosepathconstr;
 
 count = 1;
-pathconstr = optimconstr(numJobs*2);
+pathconstr = optimconstr(numJobs*4);
 
 for i=1:numJobs
     pathconstr(count) = S(4,i) >= (S(2,i) + C(2,i)) - m*(1 - Y(2,i));
     pathconstr(count+1) = S(4,i) >= (S(3,i) + C(3,i)) - m*(1- Y(3,i));
-    count = count+2;
+    pathconstr(count+1) = S(2,i) >= (S(1,i) + C(1,i)) - m*(1- Y(2,i));
+    pathconstr(count+1) = S(3,i) >= (S(1,i) + C(1,i)) - m*(1- Y(3,i));
+    count = count+4;
 end
 
 prob.Constraints.pathconstr = pathconstr;
@@ -134,7 +133,7 @@ prob.Constraints.pathconstr = pathconstr;
 %Compute Cmax
 
 count=1;
-cmaxconstr=optimconstr(1);
+cmaxconstr=optimconstr(numJobs);
 
 for i=1:numJobs
     cmaxconstr(count)=Cmax>=C(5,i);
