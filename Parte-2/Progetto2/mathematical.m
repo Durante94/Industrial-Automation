@@ -122,9 +122,9 @@ pathconstr = optimconstr(numJobs*4);
 
 for i=1:numJobs
     pathconstr(count) = S(4,i) >= (S(2,i) + C(2,i)) - m*(1 - Y(2,i));
-    pathconstr(count+1) = S(4,i) >= (S(3,i) + C(3,i)) - m*(1- Y(3,i));
-    pathconstr(count+1) = S(2,i) >= (S(1,i) + C(1,i)) - m*(1- Y(2,i));
-    pathconstr(count+1) = S(3,i) >= (S(1,i) + C(1,i)) - m*(1- Y(3,i));
+    pathconstr(count+1) = S(4,i) >= (S(3,i) + C(3,i)) - m*(1 - Y(3,i));
+    pathconstr(count+1) = S(2,i) >= (S(1,i) + C(1,i)) - m*(1 - Y(2,i));
+    pathconstr(count+1) = S(3,i) >= (S(1,i) + C(1,i)) - m*(1 - Y(3,i));
     count = count+4;
 end
 
@@ -165,10 +165,14 @@ for job=1:numJobs
     tmp=zeros(1,numMachines*2);
     for i=1:numMachines   
         if sol.Y(i,job) > 0.5
+            prevMachine = i - 1;
             if i==1
                 tmp(1,2*i-1)=sol.S(i,job);
             else
-                tmp(1,2*i-1)=sol.S(i,job)-sol.C(i-1,job);
+                if i==3 || (i==4 && sol.Y(3,job) < 0.5)
+                    prevMachine = prevMachine - 1;
+                end
+                tmp(1,2*i-1)=sol.S(i,job)-sol.C(prevMachine,job);
             end
             tmp(1,2*i)=sol.C(i,job)-sol.S(i,job);
         else
