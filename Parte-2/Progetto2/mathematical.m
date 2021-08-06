@@ -24,10 +24,17 @@ C = optimvar('C', numMachines, numJobs, 'lowerbound',0);%completion times
 X = optimvar('X', numMachines, numJobs, numJobs, 'Type', 'integer', 'lowerbound',0, 'upperbound', 1);%binary variables
 Y = optimvar('Y', numMachines, numJobs, 'Type', 'integer', 'lowerbound',0, 'upperbound', 1);%binary variables, indicate 1 if the machine is used for the job i, otherwise 0
 Cmax=optimvar('Cmax', 1, 'lowerbound',0);
+Ctot=optimvar('Ctot', 1, 'lowerbound', 0);
+
+for i=1:numMachines
+    for j=1:numJobs
+        Ctot = Ctot+ C(i,j);
+    end
+end
 
 %% Objective function
 
-prob.Objective = Cmax;
+prob.Objective = Cmax + Ctot*0.001;
 
 %% Constraints
 
@@ -121,10 +128,10 @@ count = 1;
 pathconstr = optimconstr(numJobs*4);
 
 for i=1:numJobs
-    pathconstr(count) = S(4,i) >= (S(2,i) + C(2,i)) - m*(1 - Y(2,i));
-    pathconstr(count+1) = S(4,i) >= (S(3,i) + C(3,i)) - m*(1 - Y(3,i));
-    pathconstr(count+1) = S(2,i) >= (S(1,i) + C(1,i)) - m*(1 - Y(2,i));
-    pathconstr(count+1) = S(3,i) >= (S(1,i) + C(1,i)) - m*(1 - Y(3,i));
+    pathconstr(count) = S(4,i) >= C(2,i) - m*(1 - Y(2,i));
+    pathconstr(count+1) = S(4,i) >=  C(3,i) - m*(1 - Y(3,i));
+    pathconstr(count+1) = S(2,i) >=  C(1,i) - m*(1 - Y(2,i));
+    pathconstr(count+1) = S(3,i) >= C(1,i) - m*(1 - Y(3,i));
     count = count+4;
 end
 
