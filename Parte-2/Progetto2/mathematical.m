@@ -129,8 +129,8 @@ pathconstr = optimconstr(numJobs*4);
 
 for i=1:numJobs
     pathconstr(count) = S(4,i) >= C(2,i) - m*(1 - Y(2,i));
-    pathconstr(count+1) = S(4,i) >=  C(3,i) - m*(1 - Y(3,i));
-    pathconstr(count+1) = S(2,i) >=  C(1,i) - m*(1 - Y(2,i));
+    pathconstr(count+1) = S(4,i) >= C(3,i) - m*(1 - Y(3,i));
+    pathconstr(count+1) = S(2,i) >= C(1,i) - m*(1 - Y(2,i));
     pathconstr(count+1) = S(3,i) >= C(1,i) - m*(1 - Y(3,i));
     count = count+4;
 end
