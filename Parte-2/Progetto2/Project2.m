@@ -207,7 +207,12 @@ for job=listCompletedJob
     tmp=zeros(1,numMachines*2);
     for i=1:length(job.waitingTime)   
         tmp(1,2*i-1)=job.waitingTime(i);
-        tmp(1,2*i)=job.endTime(i)-job.startTime(i)+1;
+        
+        if job.startTime(i)>=0
+            tmp(1,2*i)=job.endTime(i)-job.startTime(i);
+        else
+            tmp(1,2*i)=0;
+        end
 
         if isempty(labels{2*i})
             labels{2*i-1}="";
