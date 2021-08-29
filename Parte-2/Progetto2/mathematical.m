@@ -28,7 +28,7 @@ Ctot=optimvar('Ctot', 1, 'lowerbound', 0);
 
 for i=1:numMachines
     for j=1:numJobs
-        Ctot = Ctot+ C(i,j);
+        Ctot = Ctot + C(i,j);
     end
 end
 
@@ -110,7 +110,7 @@ end
 prob.Constraints.machine4before5constr = machine4before5constr;
 
 % Force the job to pass through M1, M2 or M3, M4 and M5
-
+    %Set boolean 1=go 0=no for each Machine
 count = 1;
 choosepathconstr = optimconstr(numJobs*(numMachines-1));
 
@@ -123,7 +123,7 @@ for i=1:numJobs
 end
 
 prob.Constraints.choosepathconstr = choosepathconstr;
-
+    %Costrain S=StartTime > C=Completition Time previous machine
 count = 1;
 pathconstr = optimconstr(numJobs*4);
 

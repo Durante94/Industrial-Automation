@@ -28,17 +28,15 @@ Ctot=optimvar('Ctot', 1, 'lowerbound', 0);
 
 for i=1:numMachines
     for j=1:numJobs
-        Ctot = Ctot+ C(i,j);
+        Ctot = Ctot + C(i,j);
     end
 end
 
 %% Objective function
 
-prob.Objective = Cmax + Ctot*0.001;
+prob.Objective = Cmax + Ctot*0.01;
 
 %% Constraints
-
-
 
 % Completion time definition
 
@@ -112,7 +110,7 @@ end
 prob.Constraints.machine4before5constr = machine4before5constr;
 
 % Force the job to pass through M1, M2 or M3, M4 and M5
-
+    %
 count = 1;
 choosepathconstr = optimconstr(numJobs*(numMachines-1));
 
@@ -125,14 +123,14 @@ for i=1:numJobs
 end
 
 prob.Constraints.choosepathconstr = choosepathconstr;
-
+    %
 count = 1;
 pathconstr = optimconstr(numJobs*4);
 
 for i=1:numJobs
     pathconstr(count) = S(4,i) >= C(2,i) - m*(1 - Y(2,i));
-    pathconstr(count+1) = S(4,i) >=  C(3,i) - m*(1 - Y(3,i));
-    pathconstr(count+1) = S(2,i) >=  C(1,i) - m*(1 - Y(2,i));
+    pathconstr(count+1) = S(4,i) >= C(3,i) - m*(1 - Y(3,i));
+    pathconstr(count+1) = S(2,i) >= C(1,i) - m*(1 - Y(2,i));
     pathconstr(count+1) = S(3,i) >= C(1,i) - m*(1 - Y(3,i));
     count = count+4;
 end
