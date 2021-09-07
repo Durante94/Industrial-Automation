@@ -23,18 +23,18 @@ for i=1:n
 end
 
 %Coefficients of our regression straight line
-a=(sumY*sumX2-sumX*sumXY)/(n*sumX2-sumX^2);
-b=(n*sumXY-sumX*sumY)/(n*sumX2-sumX^2);
+a0=(sumY*sumX2-sumX*sumXY)/(n*sumX2-sumX^2);
+a1=(n*sumXY-sumX*sumY)/(n*sumX2-sumX^2);
 
 c=(sumX*sumY2-sumY*sumXY)/(n*sumY2-sumY^2);
 d=(n*sumXY-sumX*sumY)/(n*sumY2-sumY^2);
 
-r=(b*d)^0.5;
+r=(a1*d)^0.5;
 
-fprintf("Regrssion line: y = %d X + %d ", b, a);
+fprintf("Regrssion line: y = %d X + %d ", a1, a0);
 %% Plotting
 x=10:25;
-plot(x, b*x+a);
+plot(x, a1*x+a0);
 hold on;
 for i=1:n
     plot(X(i), Y(i), '--gs');
