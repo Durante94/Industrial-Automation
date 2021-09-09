@@ -19,19 +19,6 @@ erogato(:,4)=table2array(readtable('TABELLE EROGATO.xlsx','Range','BI2:BI9'));
 erogato(:,5)=table2array(readtable('TABELLE EROGATO.xlsx','Range','BL2:BL9'));
 erogato(:,6)=table2array(readtable('TABELLE EROGATO.xlsx','Range','BO2:BO9'));
 magazzino=[150,4630,10,1500,300,700];
-% magazzino=[1500,9630,1890,5000,4800,3700];
-
-% erogato=erogato(1,:);
-% erogato=[1 3
-%     5 7
-%     6 8
-%     2 4];
-% magazzino=[1,4];
-% magazzino=[0,0];
-% multiplier=1;
-% OD=[0 2
-%     1 3];
-% capacity=[2 1];
 
 OD=reshape(OD',1,[]);
 erogato=avoidCriticities(erogato);
@@ -53,7 +40,6 @@ ub=Inf*ones(1,size(erogato,1)*(size(erogato,2)+2*size(OD,2))+size(y_cost,2));
 intcon=size(erogato,1)*size(erogato,2)+1:size(ub,2);
 
 %%
-% q1ij-yij<=0 Vij
 A1=zeros(size(erogato,1)*size(OD,2),size(ub,2));
 b1=zeros(size(erogato,1)*size(OD,2),1);
 for i=1:size(erogato,1)
@@ -62,7 +48,8 @@ for i=1:size(erogato,1)
         A1((i-1)*size(OD,2)+j,size(erogato,1)*(size(erogato,2)+2*size(OD,2))+(i-1)*size(OD,2)+j)=-1;
     end
 end
-% q2ij-yij<=0 Vij
+
+
 A2=zeros(size(erogato,1)*size(OD,2),size(ub,2));
 b2=zeros(size(erogato,1)*size(OD,2),1);
 for i=1:size(erogato,1)
@@ -73,7 +60,6 @@ for i=1:size(erogato,1)
 end
 
 %%
-% smn=0 Vm
 Aeq1=zeros(size(erogato,2),size(ub,2));
 beq1=zeros(size(erogato,2),1);
 for m=1:size(erogato,2)
@@ -82,10 +68,7 @@ end
 %you can delete the following
 beq1=ones(size(erogato,2),1)*min(capacity);
 
-
-
 %%
-% smi-smi-1-Sj q1ij*10 -Sj q2ij*11 =-di V m, i=2:end
 Aeq2=zeros(size(erogato,2)*(size(erogato,1)-1),size(ub,2));
 beq2=zeros(size(erogato,2)*(size(erogato,1)-1),1);
 for i=2:size(erogato,1)
@@ -131,19 +114,6 @@ x=x';
 %% plot path day by day
 q1_t=x(1,size(s_cost,2)+1:size(s_cost,2)+size(erogato,1)*size(OD,2));
 q2_t=x(1,size(s_cost,2)+size(erogato,1)*size(OD,2)+1:size(s_cost,2)+2*size(erogato,1)*size(OD,2));
-
-% q1_t=[0 3 0 0 2 0,...
-%           0 0 0 0 0 0,...
-%           0 2 1 0 0 5,...
-%           0 0 0 6 0 0,...
-%           0 0 0 0 0 0,...
-%           1 0 0 0 0 3];
-% q2_t=[2 0 0 4 0 0,...
-%           0 3 0 0 0 0,...
-%           0 0 0 0 0 0,...
-%           0 0 0 0 0 2,...
-%           0 0 0 0 3 5,...
-%           0 0 0 0 0 0];
 
 q1=zeros(size(erogato,1),size(OD,2));
 q2=zeros(size(erogato,1),size(OD,2));
@@ -198,7 +168,6 @@ for i=1:size(erogato,1)
         p2(i,size(p2,2)-size(erogato,2)+j)=sum(q2(i,ind))>0;
     end
 end
-%graph_day_by_day(s,t,w1,w2,p1,p2,size(erogato,2),["DEPOSITO";"484";"489";"501";"502";"503";"504"])
 graphRouting(s,t,w1,w2,p1,p2,size(erogato,2),["DEPOSITO";"484";"489";"501";"502";"503";"504"])
 
 %%

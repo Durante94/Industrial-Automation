@@ -164,40 +164,6 @@ for pv=1:size(prodotti,1)
      end
 % end
 end
-% trend=zeros(size(totale,1)+1,size(prodotti,2),size(prodotti,1));
-% time=ones(size(totale,1)+1,size(prodotti,2),size(prodotti,1));
-% for pv=1:size(prodotti,1)
-%     num_to_search=sum(price(pv,:)~=0);   
-%     for product=1:num_to_search
-%         P=final_result{1,(pv-1)*size(prodotti,2)+product};        
-%         index=2;
-%         for i=1:size(P,2)-1
-%             order=0;
-%             for j=P(1,i)+1:P(1,i+1)
-%                 if (j==size(totale,1)+1)
-%                     continue;
-%                 end
-%                 order=order+totale(j,(pv-1)*size(prodotti,2)+product);
-%             end
-%             trend(index,product,pv)=order;
-%             time(index,product,pv)=index-i;
-%             for j=P(1,i)+1:P(1,i+1)
-%                  if (j==size(totale,1)+1)
-%                     continue;
-%                 end
-%                 index = index+1;
-%                 trend(index,product,pv)=trend(index-1,product,pv)-totale(j,(pv-1)*size(prodotti,2)+product);                
-%                 time(index,product,pv)=index-i;
-%             end
-%         end        
-%     end
-% end
-% figure
-% for i=1:size(prodotti,1)
-%     subplot(6,1,i);
-%     plot(time(:,:,i),trend(:,:,i));
-%     legend(prodotti(i,:))
-% end
 
 cost=zeros(1,size(prodotti,1));
 orders=zeros(1,size(prodotti,1));
