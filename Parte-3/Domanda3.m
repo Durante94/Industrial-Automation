@@ -1,6 +1,6 @@
 clear;
 clc;
-
+%% Data Collection 
 costo_ordiazione=80;
 prezzo = 25;
 costo_mantenimento=prezzo*0.18/6;
@@ -10,17 +10,22 @@ f=[prezzo, prezzo, prezzo, prezzo, ...
     costo_mantenimento, costo_mantenimento, costo_mantenimento,costo_mantenimento,...
     costo_ordiazione,costo_ordiazione,costo_ordiazione,costo_ordiazione];
 intcon =[9 10 11 12];
+% coefficient of the inequality contraints
 A=[1 0 0 0      0 0 0 0     -(80+100+50+60) 0 0 0;
       0 1 0 0      0 0 0 0      0 -(100+50+60) 0 0;
       0 0 1 0      0 0 0 0      0 0 -(50+60) 0;
-      0 0 0 1      0 0 0 0      0 0 0 -(60)];
+      0 0 0 1      0 0 0 0      0 0 0 -(60)]; 
+% rhs of the inequality contraints
 B=[0;0;0;0];
+% coefficient of the equality contraints
 Aeq=[-1 0 0 0      1 0 0 0      0 0 0 0
          0 -1 0 0      -1 1 0 0      0 0 0 0
          0 0 -1 0      0 -1 1 0      0 0 0 0
          0 0 0 -1      0 0 -1 1      0 0 0 0
          0 0 0 0      0 0 0 1      0 0 0 0]; 
+% rhs of the equality contraints
 Beq=[-80;-100;-50;-60;0];
+
 lb=[0 0 0 0      0 0 0 0      0 0 0 0];
 ub=[Inf Inf Inf Inf      Inf Inf Inf Inf      1 1 1 1];
 
@@ -32,6 +37,7 @@ q=round(x(1:4));
 s=round(x(5:8));
 y=round(x(9:12));
 
+%% Plotting
 start=[];
 target=[];
 weight=[];
