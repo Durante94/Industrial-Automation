@@ -34,7 +34,7 @@ end
 
 %% Objective function
 
-prob.Objective = Cmax + Ctot*0.01;
+prob.Objective = Cmax + Ctot*0.001;
 
 %% Constraints
 
