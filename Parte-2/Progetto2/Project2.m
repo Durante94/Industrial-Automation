@@ -74,22 +74,22 @@ index=0; %set index of list above
 % Algorithm
 while listCompletedJob(numJobs).numJob==0
     for m=numMachines:-1:1
-        % macchina idle
+        % idle machine
         if Machines(m).startTime>-1 && Machines(m).currentJob.numJob == 0 && isempty(Machines(m).bufferJob) && Machines(m).endTime<0
             Machines(m)=Machines(m).Idle(); 
         end
         
-        % macchina impegnata
+        % working machine, if the evaluated one has just started working, we set the start time for the machine
         if Machines(m).currentJob.numJob>0 && ~Machines(m).currentJob.IsCompleted(Machines(m).numMachine, t) && Machines(m).startTime == -1
             Machines(m)=Machines(m).Starting(t);
         end
         
-        % job da iniziare
+        % set the start job execution time
         if Machines(m).currentJob.numJob>0 && ~Machines(m).currentJob.IsStarted(m)
             Machines(m).currentJob=Machines(m).currentJob.StartExe(m, t);
         end
         
-        % job terminato per la macchina
+        % set the job execution end time and behaviour of the system
         if Machines(m).currentJob.numJob>0 && Machines(m).currentJob.IsCompleted(m, t)
             Machines(m).currentJob=Machines(m).currentJob.EndExe(m, t);
                         
@@ -113,11 +113,11 @@ while listCompletedJob(numJobs).numJob==0
                         
                         if length(way2)==1 %if it is the last job then empty the array
                             way2=[];
-                        elseif i==1 %if not pop the first out
+                        elseif i==1 %if is the first of the list, pop it out
                             way2=way2(2:end);
-                        elseif i==length(way2) %if is the last trim it out
+                        elseif i==length(way2) %if is the last of the list, trim it out
                             way2=way2(1:end-1);
-                        elseif i>0 %otherwise remove the choosen one
+                        elseif i>0 %otherwise remove the choosen one in the middle of the list
                             way2=way2([1:i-1,i+1:end]);
                         end
                     else
@@ -150,7 +150,7 @@ while listCompletedJob(numJobs).numJob==0
                     index=index+1;
                     listCompletedJob(index)=Machines(m).currentJob.copyJob();
                     
-                    if index==numJobs %if the completed job was the last one set the correct end time for every machines
+                    if index==numJobs %if the completed job was the last one, set the correct end time for every machines
                         oppositeWay=~listCompletedJob(index).direction;
                         for mPos=1:length(listCompletedJob(index).endTime)  %set the finish time for every machine                        
                             Machines(mPos)=Machines(mPos).Ending(listCompletedJob(index).endTime(mPos));
@@ -198,8 +198,7 @@ end
 clf;
 close all;
 
-% Creation of the matrix that we're going
-% to plot in the Gantt chart
+% Creation of the matrix that we're going to plot in the Gantt chart
 ganttMatrix = zeros(numMachines*2, numJobs);
 labels=cell(numMachines*2, 1);
 

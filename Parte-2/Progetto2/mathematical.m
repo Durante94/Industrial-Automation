@@ -52,6 +52,17 @@ end
 
 prob.Constraints.completionTime = completionTime;
 
+% CANCELLAMI
+count=1;
+custom = optimconstr(numMachines);
+
+%for i=1:numMachines
+    custom(count) = C(5,3) > S(5,4);
+    count = count + 1;
+%end
+prob.Constraints.custom = custom;
+%CANCELLAMI
+
 % one machine must execute only one job at a time
 
 count = 1;
