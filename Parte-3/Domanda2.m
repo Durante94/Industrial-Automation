@@ -18,7 +18,7 @@ end
 %% Seasonal Indexes
 Ind_stag=zeros(1,4);
 for i=1:4
-    Ind_stag(i)=sum(X_norm(:,i))/2;
+    Ind_stag(i)=sum(X_norm(:,i))/2; % 2 is the horizon (year) considered
 end
 subplot(2,2,3);
 plot(Ind_stag);

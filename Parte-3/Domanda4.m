@@ -1,10 +1,10 @@
 clear;
 clc;
-
+%% DATA COLLECTION
 ema_num_columns = 4;
 
-totale_old=table2array(readtable('TABELLE EROGATO.xlsx','Range','AZ2:BQ366'));
-punto_vendita=table2array(readtable('TABELLE EROGATO.xlsx','Range','AZ1:BQ1'));
+totale_old=table2array(readtable('TABELLE EROGATO.xlsx','Range','AZ2:BQ366')); % dati punti vendita
+punto_vendita=table2array(readtable('TABELLE EROGATO.xlsx','Range','AZ1:BQ1')); %numero punti ventida
 prodotti=["B95","B98","Dieseltech";
     "B95","B98","Dieseltech";
     "B95","B98","Dieseltech";
@@ -18,19 +18,19 @@ price(row,col,:)=1.25;
 price(row,col,:)=1.3;
 [row,col]=find(prodotti=="Dieseltech");
 price(row,col,:)=1.2;
-
+%% DATA CLEANING
 totale=avoidCriticities(totale_old);
-
+%% ECONOMIC BATCH EVALUATIONS
 final_result=cell(3,size(prodotti,1)*size(prodotti,2));
 index_pv=1;
-for pv=1:size(prodotti,1)
+for pv=1:size(prodotti,1) % For each vendor
     figure
     costo_autobotte = 0.5*punto_vendita(index_pv);
     
     index_pv_old = index_pv;    
-    index_pv = index_pv+sum(price(pv,:)~=0);
+    index_pv = index_pv+sum(price(pv,:)~=0); % somma array logico, se la riga pv-esima ha dei nan o 0 vi saranno presenti degli 0
    
-    for product = index_pv_old:index_pv-1
+    for product = index_pv_old:index_pv-1 % for each product
         d=totale(:,product);
  
         matrice=zeros(size(totale,1),size(totale,1)+1);    
