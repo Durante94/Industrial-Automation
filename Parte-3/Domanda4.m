@@ -31,9 +31,10 @@ for pv=1:size(prodotti,1) % For each vendor
     index_pv = index_pv+sum(price(pv,:)~=0); % somma array logico, se la riga pv-esima ha dei nan o 0 vi saranno presenti degli 0
    
     for product = index_pv_old:index_pv-1 % for each product
-        d=totale(:,product);
+        %% finding the optimal solution for the lot sizing problem
+        d=totale(:,product); % domand for the product
  
-        matrice=zeros(size(totale,1),size(totale,1)+1);    
+        matrice=zeros(size(totale,1),size(totale,1)+1);% costs matrix    
         for i=1:size(totale,1)
             for j=i+1:(size(totale,1)+1)            
                 index = 1;
@@ -44,22 +45,22 @@ for pv=1:size(prodotti,1) % For each vendor
                     lotto = lotto+d(k);
                     index = index+1;
                 end
-                costo_giacenza = giacenze * 0.03 / 365 * price(pv,product+1-index_pv_old);                        
-                costo_trasporto = ceil(lotto/39000)*costo_autobotte;
+                costo_giacenza = giacenze * 0.03 / 365 * price(pv,product+1-index_pv_old); % storage cost value
+                costo_trasporto = ceil(lotto/39000)*costo_autobotte; % trasportation cost value
                 matrice(i,j)= costo_giacenza+costo_trasporto;
             end
         end
-        s=[];
+        s=[]; % matrix for construct the directed graph used for the Wagner-Within algorithm
         for i=1:size(totale,1)
             for j=i+1:(size(totale,1)+1)
-                s= [s [i;j;matrice(i,j)]];
+                s= [s [i;j;matrice(i,j)]]; % adding column to the matrix
             end
         end
-        G = digraph(s(1,:),s(2,:),s(3,:));
-        [P,d] = shortestpath(G,1,size(totale,1)+1);
+        G = digraph(s(1,:),s(2,:),s(3,:)); % creation of the directed graph
+        [P,d] = shortestpath(G,1,size(totale,1)+1); % finding the shortest path of the evaluated shop point and the evaluated product
         subplot(5,ema_num_columns,(product+1-index_pv_old)*ema_num_columns+1);
         p = plot(G);
-        highlight(p,P,'EdgeColor','r','LineWidth',2.2,'NodeColor','r')
+        highlight(p,P,'EdgeColor','r','LineWidth',2.2,'NodeColor','r') % highlight the node of the solution
         title(prodotti(pv,product+1-index_pv_old)+"        C: "+d);
         final_result{1,(pv-1)*size(prodotti,2)+product+1-index_pv_old}=P;
         final_result{2,(pv-1)*size(prodotti,2)+product+1-index_pv_old}=d;
@@ -68,11 +69,12 @@ for pv=1:size(prodotti,1) % For each vendor
         fprintf(sprintf("Numero ordini - %i\n", size(P,2)-1));
         fprintf("---------------\n");
     end
-    trend=zeros(size(totale,1)+1,size(prodotti,2));
-    time=ones(size(totale,1)+1,size(prodotti,2));
+    trend=zeros(size(totale,1)+1,size(prodotti,2)); % variable to look the storage cost variation and transportation cost variation
+    time=ones(size(totale,1)+1,size(prodotti,2)); % period considered
     time(1,:)=0;
-    num_to_search=index_pv-index_pv_old;   
-    for product=1:num_to_search
+    num_to_search=index_pv-index_pv_old;
+    %% evaluation of the storage costs and transportation costs
+    for product=1:num_to_search % for each product
         P=final_result{1,(pv-1)*size(prodotti,2)+product};        
         index=3;
         for i=1:size(P,2)-1
@@ -81,7 +83,7 @@ for pv=1:size(prodotti,1) % For each vendor
                 if (j==size(totale,1)+1)
                     continue;
                 end
-                order=order+totale(j,product);
+                order=order+totale(j,product); %trend value for the considered period
             end
             if order >0
                 trend(index,product)=trend(index-1,product)+order;
@@ -164,7 +166,7 @@ for pv=1:size(prodotti,1) % For each vendor
      end
 % end
 end
-
+%% final consideration and differencies between shop point
 cost=zeros(1,size(prodotti,1));
 orders=zeros(1,size(prodotti,1));
 cost_tot=zeros(size(prodotti,2),size(prodotti,1));
