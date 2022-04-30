@@ -6,6 +6,7 @@ prezzo = 25;
 costo_mantenimento=prezzo*0.18/6;
 d=[80,100,50,60];
 
+%coefficient of the objective function
 f=[prezzo, prezzo, prezzo, prezzo, ...
     costo_mantenimento, costo_mantenimento, costo_mantenimento,costo_mantenimento,...
     costo_ordiazione,costo_ordiazione,costo_ordiazione,costo_ordiazione];

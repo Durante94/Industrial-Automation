@@ -7,6 +7,7 @@ subplot(2,2,1);
 hold on
 plot(reshape(X',1,[]),'Marker','o');
 set(gca,'xtick',[0:4:12])
+title('Current situation');
 grid on
 %% Year average
 mean=zeros(1,2);
@@ -23,6 +24,7 @@ end
 subplot(2,2,3);
 plot(Ind_stag);
 set(gca,'xtick',[0:4:12]);
+title('Seasonal Indexes');
 grid on
 %% Deseasonalizing Data
 X_destag=zeros(2,4);
@@ -39,8 +41,9 @@ plot(X_destag_row,'Marker','o');
 params=polyfit(1:8,X_destag_row,1); % Identification
 tModelled=polyval(params,1:12); % Evaluation of the previous function in all the season point needed
 plot(1:12,tModelled);
-trend_anno3=tModelled(9:12); % Export of the 3rd year
+trend_anno3=tModelled(9:12); % Regression for the 3rd year
 set(gca,'xtick',[0:4:12])
+title('Identified function')
 grid on
 %% Forecast 3rd year
 for i=1:4
@@ -52,4 +55,5 @@ hold on
 plot(reshape(X',1,[]),'Marker','o');
 plot(1:12,tModelled);
 set(gca,'xtick',[0:4:12])
+title('Prediction')
 grid on
