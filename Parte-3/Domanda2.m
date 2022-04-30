@@ -31,12 +31,12 @@ for i=1:2
         X_destag(i,j)=X(i,j)/Ind_stag(j);% smoothig by dividing the data with the respectively seasonal index
     end
 end
-%% Regression
+%% Identification of the function interpolationg the historical series
 X_destag_row = reshape(X_destag,1,[]);
 subplot(2,2,2);
 hold on;
 plot(X_destag_row,'Marker','o');
-params=polyfit(1:8,X_destag_row,1); % Identification of the function interpolating the historical series
+params=polyfit(1:8,X_destag_row,1); % Identification
 tModelled=polyval(params,1:12); % Evaluation of the previous function in all the season point needed
 plot(1:12,tModelled);
 trend_anno3=tModelled(9:12); % Export of the 3rd year
