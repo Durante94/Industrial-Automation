@@ -22,7 +22,7 @@ magazzino=[150,4630,10,1500,300,700];
 OD=reshape(OD',1,[]);
 erogato=avoidCriticities(erogato);
 
-%%
+%% Objective function
 s_cost=ones(1,size(erogato,1)*size(erogato,2))*0.03/365*1.3;
 y_cost=zeros(1,size(OD,2)*size(erogato,1));
 for i=1:size(erogato,1)
@@ -32,12 +32,12 @@ for i=1:size(erogato,1)
 end
 f=[s_cost, zeros(1,2*size(erogato,1)*size(OD,2)), y_cost];
 
-%%
+%% variables bounds
 lb=zeros(1,size(erogato,1)*(size(erogato,2)+2*size(OD,2))+size(y_cost,2));
 ub=Inf*ones(1,size(erogato,1)*(size(erogato,2)+2*size(OD,2))+size(y_cost,2));
 intcon=size(erogato,1)*size(erogato,2)+1:size(ub,2);
 
-%%
+%% routing contraints
 A1=zeros(size(erogato,1)*size(OD,2),size(ub,2));
 b1=zeros(size(erogato,1)*size(OD,2),1);
 for i=1:size(erogato,1)
@@ -57,7 +57,7 @@ for i=1:size(erogato,1)
     end
 end
 
-%%
+%% Capacity constraints
 Aeq1=zeros(size(erogato,2),size(ub,2));
 beq1=zeros(size(erogato,2),1);
 for m=1:size(erogato,2)
@@ -66,7 +66,7 @@ end
 %you can delete the following
 beq1=ones(size(erogato,2),1)*min(capacity);
 
-%%
+%% Inventory retailers constraint
 Aeq2=zeros(size(erogato,2)*(size(erogato,1)-1),size(ub,2));
 beq2=zeros(size(erogato,2)*(size(erogato,1)-1),1);
 for i=2:size(erogato,1)
@@ -81,7 +81,7 @@ for i=2:size(erogato,1)
     end    
 end
 
-%%
+%% full drop contraints
 % sm1-Sj q11j +q21j =-d1 V m
 Aeq3=zeros(size(erogato,2),size(ub,2));
 beq3=zeros(size(erogato,2),1);
@@ -94,7 +94,7 @@ for m=1:size(erogato,2)
         beq3(m,1)=-erogato(1,m)+magazzino(1,m);
 end    
 
-%%
+%% Problem execution
 Aeq=[Aeq2
     Aeq3];
 beq=[beq2
