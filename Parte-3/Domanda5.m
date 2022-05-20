@@ -59,7 +59,7 @@ end
 
 %% Capacity constraints
 Aeq1=zeros(size(erogato,2),size(ub,2));
-beq1=zeros(size(erogato,2),1);
+%beq1=zeros(size(erogato,2),1);
 for m=1:size(erogato,2)
     Aeq1(m,size(erogato,2)*size(erogato,1)-(m-1))=1;    
 end
