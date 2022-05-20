@@ -2,8 +2,7 @@ clear;
 clc;
 
 r=60;
-multiplier=1000;
-capacity=[10 11];
+capacity=[10000 11000];
 OD = [0 1 2 2 2 1;
     1 0 1 2 2 2
     2 1 0 1 2 2
@@ -22,7 +21,6 @@ magazzino=[150,4630,10,1500,300,700];
 
 OD=reshape(OD',1,[]);
 erogato=avoidCriticities(erogato);
-capacity=capacity*multiplier;
 
 %%
 s_cost=ones(1,size(erogato,1)*size(erogato,2))*0.03/365*1.3;
